@@ -285,4 +285,4 @@ If you have any questions or need help, please open an issue on GitHub.
 
 ---
 
-Made with ❤️ by Alphavirusboy
+Made with ❤️ by Alphavirusboy,Karanpatel8282,Alston Menezes.
