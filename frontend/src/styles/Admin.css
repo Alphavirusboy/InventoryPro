@@ -1,0 +1,418 @@
+.admin-dashboard, .admin-inventory, .admin-reports, .admin-orders {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 3rem 2rem;
+}
+
+.admin-dashboard h1, .admin-inventory h1, .admin-reports h1, .admin-orders h1 {
+  color: #2c3e50;
+  font-size: 3rem;
+  margin-bottom: 3rem;
+  font-weight: 900;
+  letter-spacing: -1px;
+}
+
+.admin-dashboard h1::before { content: "📊 "; }
+.admin-inventory h1::before { content: "📦 "; }
+.admin-reports h1::before { content: "⚠️ "; }
+.admin-orders h1::before { content: "📋 "; }
+
+/* Dashboard Stats */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2.5rem;
+  margin-bottom: 4rem;
+}
+
+.stat-card {
+  background: white;
+  padding: 2.5rem;
+  border-radius: 20px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  transition: all 0.3s;
+  border-left: 5px solid #e67e22;
+}
+
+.stat-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+}
+
+.stat-card.warning {
+  border-left-color: #e74c3c;
+}
+
+.stat-icon {
+  font-size: 4rem;
+}
+
+.stat-info h3 {
+  color: #7f8c8d;
+  font-size: 0.95rem;
+  margin-bottom: 0.8rem;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.stat-value {
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: #2c3e50;
+  letter-spacing: -1px;
+}
+
+/* Charts */
+.chart-container {
+  background: white;
+  padding: 3rem;
+  border-radius: 20px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+  margin-bottom: 3rem;
+  border-top: 5px solid #e67e22;
+}
+
+.chart-container h2 {
+  color: #2c3e50;
+  margin-bottom: 2rem;
+  font-size: 1.8rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+/* Alert Section */
+.alert-section {
+  background: linear-gradient(135deg, #fff5e6 0%, #ffe8cc 100%);
+  padding: 3rem;
+  border-radius: 20px;
+  border-left: 8px solid #f39c12;
+  margin-top: 3rem;
+  box-shadow: 0 5px 20px rgba(243, 156, 18, 0.2);
+}
+
+.alert-section h2 {
+  color: #e67e22;
+  margin-bottom: 2rem;
+  font-size: 1.8rem;
+  font-weight: 800;
+}
+
+.low-stock-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.low-stock-item {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+  transition: all 0.3s;
+}
+
+.low-stock-item:hover {
+  transform: translateX(10px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.product-name {
+  font-weight: 700;
+  color: #2c3e50;
+  font-size: 1.1rem;
+}
+
+.stock-level {
+  color: #e74c3c;
+  font-weight: 800;
+  font-size: 1.1rem;
+}
+
+/* Inventory Management */
+.inventory-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 3rem;
+}
+
+.inventory-table {
+  background: white;
+  padding: 2.5rem;
+  border-radius: 20px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+  overflow-x: auto;
+  border-top: 5px solid #e67e22;
+}
+
+.inventory-table table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.inventory-table th {
+  background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+  color: white;
+  padding: 1.3rem;
+  text-align: left;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 0.9rem;
+}
+
+.inventory-table th:first-child {
+  border-top-left-radius: 12px;
+}
+
+.inventory-table th:last-child {
+  border-top-right-radius: 12px;
+}
+
+.inventory-table td {
+  padding: 1.3rem;
+  border-bottom: 2px solid #f8f9fa;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.stock-input {
+  width: 90px;
+  padding: 0.7rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.badge {
+  padding: 0.5rem 1rem;
+  border-radius: 30px;
+  font-size: 0.85rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.badge.good {
+  background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+  color: white;
+}
+
+.badge.low {
+  background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+  color: white;
+}
+
+.btn-edit, .btn-delete {
+  padding: 0.7rem 1.3rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 700;
+  margin-right: 0.7rem;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+  transition: all 0.3s;
+}
+
+.btn-edit {
+  background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+  color: white;
+}
+
+.btn-edit:hover {
+  transform: scale(1.05);
+  box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+}
+
+.btn-delete {
+  background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+  color: white;
+}
+
+.btn-delete:hover {
+  transform: scale(1.05);
+  box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  backdrop-filter: blur(5px);
+}
+
+.modal-content {
+  background: white;
+  padding: 3rem;
+  border-radius: 20px;
+  width: 90%;
+  max-width: 700px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  border-top: 5px solid #e67e22;
+}
+
+.modal-content h2 {
+  color: #2c3e50;
+  margin-bottom: 2rem;
+  font-size: 2rem;
+  font-weight: 800;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 2.5rem;
+}
+
+/* Reports */
+.reports-table, .orders-table {
+  background: white;
+  padding: 2.5rem;
+  border-radius: 20px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+  overflow-x: auto;
+  border-top: 5px solid #e67e22;
+}
+
+.reports-table table, .orders-table table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.reports-table th, .orders-table th {
+  background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+  color: white;
+  padding: 1.3rem;
+  text-align: left;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 0.9rem;
+}
+
+.reports-table td, .orders-table td {
+  padding: 1.3rem;
+  border-bottom: 2px solid #f8f9fa;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.badge-count {
+  background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 50%;
+  font-weight: 900;
+  font-size: 1rem;
+}
+
+.status-badge {
+  padding: 0.6rem 1.2rem;
+  border-radius: 30px;
+  font-size: 0.85rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-badge.pending {
+  background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+  color: white;
+}
+
+.status-badge.restocked {
+  background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+  color: white;
+}
+
+.status-badge.dismissed {
+  background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
+  color: white;
+}
+
+.status-badge.completed {
+  background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+  color: white;
+}
+
+.btn-success {
+  padding: 0.7rem 1.3rem;
+  background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 700;
+  margin-right: 0.7rem;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+  transition: all 0.3s;
+}
+
+.btn-success:hover {
+  transform: scale(1.05);
+}
+
+.btn-dismiss {
+  padding: 0.7rem 1.3rem;
+  background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+  transition: all 0.3s;
+}
+
+.btn-dismiss:hover {
+  transform: scale(1.05);
+}
+
+.empty-state {
+  text-align: center;
+  padding: 5rem;
+  color: #7f8c8d;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.empty-state::before {
+  content: "📭";
+  display: block;
+  font-size: 6rem;
+  margin-bottom: 1rem;
+  opacity: 0.3;
+}
