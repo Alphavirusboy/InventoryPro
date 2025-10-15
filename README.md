@@ -267,11 +267,6 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 This project is open source and available under the [MIT License](LICENSE).
 
-## 👨‍💻 Author
-
-**Alphavirusboy**
-- GitHub: [@Alphavirusboy](https://github.com/Alphavirusboy)
-
 ## 🙏 Acknowledgments
 
 - React team for the amazing library
