@@ -4,7 +4,7 @@ import sequelize from "../db.js";
 const Order = sequelize.define("Order", {
   userId: { 
     type: DataTypes.INTEGER, 
-    allowNull: false 
+    allowNull: true  // Allow null for guest users
   },
   totalAmount: { 
     type: DataTypes.FLOAT, 

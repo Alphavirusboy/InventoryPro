@@ -102,4 +102,48 @@ router.get("/categories/list", async (req, res) => {
   }
 });
 
+// Update stock when item added to cart (public)
+router.patch("/:id/stock", async (req, res) => {
+  try {
+    const { quantity } = req.body;
+    const product = await Product.findByPk(req.params.id);
+    
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    if (product.stock < quantity) {
+      return res.status(400).json({ message: "Insufficient stock" });
+    }
+
+    const newStock = product.stock - quantity;
+    await product.update({ stock: newStock });
+
+    res.json({ 
+      message: "Stock updated successfully", 
+      product: {
+        id: product.id,
+        stock: newStock
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Error updating stock", error: error.message });
+  }
+});
+
+// Delete product (admin only)
+router.delete("/:id", authenticate, isAdmin, async (req, res) => {
+  try {
+    const product = await Product.findByPk(req.params.id);
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    await product.destroy();
+    res.json({ message: "Product deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Error deleting product", error: error.message });
+  }
+});
+
 export default router;

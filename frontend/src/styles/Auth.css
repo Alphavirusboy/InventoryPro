@@ -4,7 +4,7 @@
   align-items: center;
   justify-content: center;
   padding: 2rem;
-  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #1e3c72 100%);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   position: relative;
   overflow: hidden;
 }
@@ -14,17 +14,17 @@
   position: absolute;
   width: 500px;
   height: 500px;
-  background: radial-gradient(circle, rgba(230, 126, 34, 0.1) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
   top: -200px;
   right: -200px;
   border-radius: 50%;
 }
 
 .auth-container::after {
-  content: "🏭";
+  content: "📦";
   position: absolute;
   font-size: 15rem;
-  opacity: 0.03;
+  opacity: 0.05;
   bottom: -50px;
   left: -50px;
 }
@@ -35,10 +35,11 @@
   padding: 3rem;
   width: 100%;
   max-width: 480px;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  box-shadow: 0 25px 60px rgba(0,0,0,0.3);
   border-top: 5px solid #e67e22;
   position: relative;
   z-index: 1;
+  backdrop-filter: blur(10px);
 }
 
 .auth-header {
@@ -49,23 +50,27 @@
 }
 
 .auth-header h1 {
-  font-size: 2.2rem;
+  font-size: 2.5rem;
   color: #2c3e50;
   margin-bottom: 0.5rem;
   font-weight: 800;
   letter-spacing: -1px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .auth-header p {
   color: #7f8c8d;
-  font-size: 1rem;
+  font-size: 1.1rem;
   font-weight: 500;
 }
 
 .auth-form {
   display: flex;
   flex-direction: column;
-  gap: 1.8rem;
+  gap: 1.5rem;
 }
 
 .form-group {
@@ -86,7 +91,7 @@
 .form-group select {
   padding: 1rem 1.2rem;
   border: 2px solid #e0e0e0;
-  border-radius: 10px;
+  border-radius: 12px;
   font-size: 1rem;
   transition: all 0.3s;
   background: #f8f9fa;
@@ -105,7 +110,7 @@
   background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
   color: white;
   border: none;
-  border-radius: 10px;
+  border-radius: 12px;
   font-size: 1.1rem;
   font-weight: 700;
   cursor: pointer;
@@ -114,6 +119,10 @@
   transition: all 0.3s;
   box-shadow: 0 4px 15px rgba(230, 126, 34, 0.3);
   margin-top: 1rem;
+}
+
+.btn-primary.btn-full {
+  width: 100%;
 }
 
 .btn-primary:hover:not(:disabled) {
@@ -127,6 +136,59 @@
   transform: none;
 }
 
+.demo-section {
+  margin: 2rem 0;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+  border-radius: 12px;
+  border: 2px dashed #dee2e6;
+}
+
+.demo-section p {
+  text-align: center;
+  margin-bottom: 1rem;
+  font-weight: 600;
+  color: #495057;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 0.9rem;
+}
+
+.demo-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.btn-demo {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.btn-demo.btn-admin {
+  background: linear-gradient(135deg, #dc3545, #c82333);
+  color: white;
+  box-shadow: 0 3px 10px rgba(220, 53, 69, 0.3);
+}
+
+.btn-demo.btn-customer {
+  background: linear-gradient(135deg, #28a745, #218838);
+  color: white;
+  box-shadow: 0 3px 10px rgba(40, 167, 69, 0.3);
+}
+
+.btn-demo:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+}
+
 .auth-footer {
   text-align: center;
   margin-top: 2rem;
@@ -136,14 +198,48 @@
   font-weight: 500;
 }
 
-.auth-footer a {
+.auth-footer p {
+  margin: 0.5rem 0;
+}
+
+.auth-link {
   color: #e67e22;
   text-decoration: none;
   font-weight: 700;
   transition: color 0.3s;
 }
 
-.auth-footer a:hover {
+.auth-link:hover {
   color: #d35400;
   text-decoration: underline;
+}
+
+.error-message {
+  padding: 1rem;
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  color: white;
+  border-radius: 10px;
+  text-align: center;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .auth-container {
+    padding: 1rem;
+  }
+  
+  .auth-card {
+    padding: 2rem;
+  }
+  
+  .demo-buttons {
+    flex-direction: column;
+  }
+  
+  .auth-header h1 {
+    font-size: 2rem;
+  }
 }

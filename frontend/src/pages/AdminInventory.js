@@ -22,9 +22,13 @@ function AdminInventory() {
     fetchProducts();
   }, []);
 
+  const getAuthHeaders = () => ({
+    headers: { Authorization: `Bearer ${token}` }
+  });
+
   const fetchProducts = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/inventory');
+      const response = await axios.get('http://localhost:3001/api/inventory');
       setProducts(response.data);
     } catch (error) {
       console.error('Error fetching products:', error);
@@ -36,15 +40,15 @@ function AdminInventory() {
     try {
       if (editingProduct) {
         await axios.put(
-          `http://localhost:5000/api/inventory/${editingProduct.id}`,
+          `http://localhost:3001/api/inventory/${editingProduct.id}`,
           formData,
-          { headers: { Authorization: `Bearer ${token}` } }
+          getAuthHeaders()
         );
       } else {
         await axios.post(
-          'http://localhost:5000/api/inventory',
+          'http://localhost:3001/api/inventory',
           formData,
-          { headers: { Authorization: `Bearer ${token}` } }
+          getAuthHeaders()
         );
       }
       
@@ -62,7 +66,7 @@ function AdminInventory() {
       fetchProducts();
     } catch (error) {
       console.error('Error saving product:', error);
-      alert('Error saving product');
+      alert('Error saving product: ' + (error.response?.data?.message || error.message));
     }
   };
 
@@ -84,13 +88,13 @@ function AdminInventory() {
     if (window.confirm('Are you sure you want to delete this product?')) {
       try {
         await axios.delete(
-          `http://localhost:5000/api/admin/products/${id}`,
-          { headers: { Authorization: `Bearer ${token}` } }
+          `http://localhost:3001/api/inventory/${id}`,
+          getAuthHeaders()
         );
         fetchProducts();
       } catch (error) {
         console.error('Error deleting product:', error);
-        alert('Error deleting product');
+        alert('Error deleting product: ' + (error.response?.data?.message || error.message));
       }
     }
   };
@@ -98,13 +102,14 @@ function AdminInventory() {
   const updateStock = async (id, newStock) => {
     try {
       await axios.patch(
-        `http://localhost:5000/api/admin/products/${id}/stock`,
+        `http://localhost:3001/api/admin/products/${id}/stock`,
         { stock: newStock },
-        { headers: { Authorization: `Bearer ${token}` } }
+        getAuthHeaders()
       );
       fetchProducts();
     } catch (error) {
       console.error('Error updating stock:', error);
+      alert('Error updating stock: ' + (error.response?.data?.message || error.message));
     }
   };
 

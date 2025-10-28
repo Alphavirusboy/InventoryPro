@@ -3,10 +3,39 @@ import Product from "../models/Product.js";
 import Order from "../models/Order.js";
 import OrderItem from "../models/OrderItem.js";
 import MissingProductReport from "../models/MissingProductReport.js";
+import User from "../models/User.js";
 import { authenticate, isAdmin } from "../middleware/auth.js";
 import { Sequelize } from "sequelize";
 
 const router = express.Router();
+
+// Admin product management routes
+router.delete("/products/:id", authenticate, isAdmin, async (req, res) => {
+  try {
+    const product = await Product.findByPk(req.params.id);
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+    await product.destroy();
+    res.json({ message: "Product deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Error deleting product", error: error.message });
+  }
+});
+
+router.patch("/products/:id/stock", authenticate, isAdmin, async (req, res) => {
+  try {
+    const { stock } = req.body;
+    const product = await Product.findByPk(req.params.id);
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+    await product.update({ stock });
+    res.json({ message: "Stock updated successfully", product });
+  } catch (error) {
+    res.status(500).json({ message: "Error updating stock", error: error.message });
+  }
+});
 
 // Get all orders (admin only)
 router.get("/orders", authenticate, isAdmin, async (req, res) => {
@@ -167,6 +196,131 @@ router.delete("/products/:id", authenticate, isAdmin, async (req, res) => {
     res.json({ message: "Product deleted" });
   } catch (error) {
     res.status(500).json({ message: "Error deleting product", error: error.message });
+  }
+});
+
+// Dashboard stats
+router.get("/dashboard-stats", authenticate, isAdmin, async (req, res) => {
+  try {
+    const [totalOrders, totalProducts, totalRevenue, topProducts] = await Promise.all([
+      Order.count(),
+      Product.count(),
+      Order.sum('totalAmount'),
+      OrderItem.findAll({
+        attributes: [
+          'productId',
+          [Sequelize.fn('SUM', Sequelize.col('quantity')), 'totalSold']
+        ],
+        include: [Product],
+        group: ['productId', 'Product.id'],
+        order: [[Sequelize.fn('SUM', Sequelize.col('quantity')), 'DESC']],
+        limit: 5
+      })
+    ]);
+
+    // Get total users count
+    const totalUsers = await User.count();
+
+    res.json({
+      totalOrders: totalOrders || 0,
+      totalProducts: totalProducts || 0,
+      totalRevenue: parseFloat(totalRevenue || 0).toFixed(2),
+      totalUsers,
+      topProducts: topProducts.map(item => ({
+        id: item.Product.id,
+        name: item.Product.name,
+        totalSold: item.dataValues.totalSold
+      }))
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching dashboard stats", error: error.message });
+  }
+});
+
+// Recent orders
+router.get("/recent-orders", authenticate, isAdmin, async (req, res) => {
+  try {
+    const orders = await Order.findAll({
+      limit: 10,
+      order: [['createdAt', 'DESC']],
+      include: [{
+        model: OrderItem,
+        include: [Product]
+      }]
+    });
+
+    res.json(orders);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching recent orders", error: error.message });
+  }
+});
+
+// Low stock products
+router.get("/low-stock", authenticate, isAdmin, async (req, res) => {
+  try {
+    const lowStockProducts = await Product.findAll({
+      where: {
+        stock: {
+          [Sequelize.Op.lte]: 10
+        }
+      },
+      order: [['stock', 'ASC']]
+    });
+
+    res.json(lowStockProducts);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching low stock products", error: error.message });
+  }
+});
+
+// Get all users
+router.get("/users", authenticate, isAdmin, async (req, res) => {
+  try {
+    const users = await User.findAll({
+      attributes: { exclude: ['password'] },
+      order: [['createdAt', 'DESC']]
+    });
+
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching users", error: error.message });
+  }
+});
+
+// Delete user
+router.delete("/users/:id", authenticate, isAdmin, async (req, res) => {
+  try {
+    const user = await User.findByPk(req.params.id);
+    
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (user.role === 'admin') {
+      return res.status(400).json({ message: "Cannot delete admin user" });
+    }
+
+    await user.destroy();
+    res.json({ message: "User deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Error deleting user", error: error.message });
+  }
+});
+
+// Update order status
+router.put("/orders/:id/status", authenticate, isAdmin, async (req, res) => {
+  try {
+    const { status } = req.body;
+    const order = await Order.findByPk(req.params.id);
+    
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    await order.update({ status });
+    res.json({ message: "Order status updated successfully", order });
+  } catch (error) {
+    res.status(500).json({ message: "Error updating order status", error: error.message });
   }
 });
 

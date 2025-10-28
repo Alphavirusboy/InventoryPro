@@ -12,7 +12,7 @@ const MissingProductReport = sequelize.define("MissingProductReport", {
   },
   customerId: { 
     type: DataTypes.INTEGER, 
-    allowNull: false 
+    allowNull: true  // Allow null for guest users
   },
   customerName: {
     type: DataTypes.STRING,

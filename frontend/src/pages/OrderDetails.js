@@ -16,9 +16,17 @@ function OrderDetails() {
 
   const fetchOrder = async () => {
     try {
-      const response = await axios.get(
-        `http://localhost:5000/api/orders/${id}`,
-        { headers: { Authorization: `Bearer ${token}` } }
+      // Try to fetch order with authentication first (for logged-in users)
+      let response;
+      const headers = {};
+      
+      if (token) {
+        headers.Authorization = `Bearer ${token}`;
+      }
+      
+      response = await axios.get(
+        `http://localhost:3001/api/orders/${id}`,
+        { headers }
       );
       setOrder(response.data);
       setLoading(false);

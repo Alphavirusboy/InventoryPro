@@ -199,85 +199,46 @@ const AdminDashboard = () => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
-      day: 'numeric'
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
     });
+  };
+
+  const getOrderStatusColor = (status) => {
+    switch (status?.toLowerCase()) {
+      case 'pending': return '#f39c12';
+      case 'processing': return '#3498db';
+      case 'shipped': return '#9b59b6';
+      case 'delivered': return '#27ae60';
+      case 'cancelled': return '#e74c3c';
+      default: return '#95a5a6';
+    }
   };
 
   if (loading) {
     return (
       <div className="loading-container">
         <div className="loading-spinner"></div>
-        <p>Loading dashboard...</p>
+        <p>Loading admin dashboard...</p>
       </div>
     );
   }
 
   return (
     <div className="admin-dashboard">
-      {/* Stock Update Modal */}
-      {stockUpdateModal && (
-        <div className="modal-overlay">
-          <div className="modal">
-            <div className="modal-header">
-              <h3>Update Stock for {editingProduct?.name}</h3>
-              <button 
-                className="close-btn"
-                onClick={() => setStockUpdateModal(false)}
-              >
-                ×
-              </button>
-            </div>
-            <div className="modal-body">
-              <div className="current-info">
-                <p>Current Stock: <strong>{editingProduct?.stock}</strong></p>
-                <p>Low Stock Threshold: <strong>{editingProduct?.lowStockThreshold}</strong></p>
-              </div>
-              <div className="input-group">
-                <label>New Stock Quantity:</label>
-                <input
-                  type="number"
-                  value={newStock}
-                  onChange={(e) => setNewStock(e.target.value)}
-                  min="0"
-                  className="stock-input"
-                />
-              </div>
-            </div>
-            <div className="modal-footer">
-              <button 
-                className="btn btn-secondary"
-                onClick={() => setStockUpdateModal(false)}
-              >
-                Cancel
-              </button>
-              <button 
-                className="btn btn-primary"
-                onClick={() => updateStock(editingProduct.id, newStock)}
-              >
-                Update Stock
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
       <div className="dashboard-header">
         <div className="header-content">
-          <div className="header-left">
-            <h1>📊 Admin Dashboard</h1>
-            <p>Comprehensive business management and analytics</p>
-          </div>
-          <div className="header-actions">
-            <button 
-              className="manage-inventory-btn"
-              onClick={() => navigate('/admin/inventory')}
-            >
-              📦 Manage Inventory
-            </button>
-            <button onClick={handleLogout} className="logout-btn">
-              LOGOUT
-            </button>
-          </div>
+          <h1>Admin Dashboard</h1>
+          <p>Comprehensive business management and analytics</p>
+        </div>
+        <div className="header-actions">
+          <button onClick={() => navigate('/admin/inventory')} className="inventory-btn">
+            📦 Manage Inventory
+          </button>
+          <button onClick={handleLogout} className="logout-btn">
+            Logout
+          </button>
         </div>
       </div>
 
@@ -553,60 +514,264 @@ const AdminDashboard = () => {
             </div>
           </div>
         )}
+                  <span className="stat-change positive">+12.5%</span>
+                </div>
+              </div>
+              <div className="stat-card orders">
+                <div className="stat-icon">📦</div>
+                <div className="stat-info">
+                  <h3>{stats.totalOrders || 0}</h3>
+                  <p>Total Orders</p>
+                  <span className="stat-change positive">+8.3%</span>
+                </div>
+              </div>
+              <div className="stat-card products">
+                <div className="stat-icon">📋</div>
+                <div className="stat-info">
+                  <h3>{stats.totalProducts || 0}</h3>
+                  <p>Products</p>
+                  <span className="stat-change neutral">0%</span>
+                </div>
+              </div>
+              <div className="stat-card users">
+                <div className="stat-icon">👥</div>
+                <div className="stat-info">
+                  <h3>{stats.totalUsers || 0}</h3>
+                  <p>Users</p>
+                  <span className="stat-change positive">+15.7%</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="charts-grid">
+              <div className="chart-card">
+                <h3>Sales Overview</h3>
+                <div className="chart-placeholder">
+                  <div className="mock-chart">
+                    <div className="chart-bars">
+                      <div className="bar" style={{height: '60%'}}></div>
+                      <div className="bar" style={{height: '80%'}}></div>
+                      <div className="bar" style={{height: '40%'}}></div>
+                      <div className="bar" style={{height: '90%'}}></div>
+                      <div className="bar" style={{height: '70%'}}></div>
+                      <div className="bar" style={{height: '85%'}}></div>
+                      <div className="bar" style={{height: '95%'}}></div>
+                    </div>
+                    <div className="chart-labels">
+                      <span>Mon</span>
+                      <span>Tue</span>
+                      <span>Wed</span>
+                      <span>Thu</span>
+                      <span>Fri</span>
+                      <span>Sat</span>
+                      <span>Sun</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="chart-card">
+                <h3>Top Products</h3>
+                <div className="top-products">
+                  {stats.topProducts?.slice(0, 5).map((product, index) => (
+                    <div key={product.id} className="product-item">
+                      <span className="rank">#{index + 1}</span>
+                      <span className="name">{product.name}</span>
+                      <span className="sales">{product.totalSold} sold</span>
+                    </div>
+                  )) || <p>No sales data available</p>}
+                </div>
+              </div>
+            </div>
+
+            <div className="alerts-section">
+              <h3>System Alerts</h3>
+              <div className="alerts-grid">
+                {lowStockProducts.length > 0 && (
+                  <div className="alert alert-warning">
+                    <div className="alert-icon">⚠️</div>
+                    <div className="alert-content">
+                      <h4>Low Stock Alert</h4>
+                      <p>{lowStockProducts.length} products are running low on stock</p>
+                    </div>
+                  </div>
+                )}
+                
+                <div className="alert alert-info">
+                  <div className="alert-icon">📈</div>
+                  <div className="alert-content">
+                    <h4>Sales Growth</h4>
+                    <p>Revenue increased by 12.5% this month</p>
+                  </div>
+                </div>
+
+                <div className="alert alert-success">
+                  <div className="alert-icon">✅</div>
+                  <div className="alert-content">
+                    <h4>System Status</h4>
+                    <p>All systems are operational</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'orders' && (
+          <div className="orders-tab">
+            <div className="orders-header">
+              <h2>Recent Orders</h2>
+              <p>Manage and track customer orders</p>
+            </div>
+
+            <div className="orders-table">
+              <div className="table-header">
+                <div>Order ID</div>
+                <div>Customer</div>
+                <div>Date</div>
+                <div>Amount</div>
+                <div>Status</div>
+                <div>Actions</div>
+              </div>
+              
+              {recentOrders.map(order => (
+                <div key={order.id} className="table-row">
+                  <div className="order-id">#{order.id}</div>
+                  <div className="customer-info">
+                    <strong>{order.customerName}</strong>
+                    <small>{order.customerEmail}</small>
+                  </div>
+                  <div className="order-date">{formatDate(order.createdAt)}</div>
+                  <div className="order-amount">${parseFloat(order.totalAmount).toFixed(2)}</div>
+                  <div className="order-status">
+                    <select 
+                      value={order.status || 'pending'}
+                      onChange={(e) => updateOrderStatus(order.id, e.target.value)}
+                      style={{ backgroundColor: getOrderStatusColor(order.status) }}
+                      className="status-select"
+                    >
+                      <option value="pending">Pending</option>
+                      <option value="processing">Processing</option>
+                      <option value="shipped">Shipped</option>
+                      <option value="delivered">Delivered</option>
+                      <option value="cancelled">Cancelled</option>
+                    </select>
+                  </div>
+                  <div className="order-actions">
+                    <button 
+                      onClick={() => navigate(`/orders/${order.id}`)}
+                      className="view-btn"
+                    >
+                      View
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'inventory' && (
+          <div className="inventory-tab">
+            <div className="inventory-header">
+              <h2>Stock Alerts</h2>
+              <p>Products requiring immediate attention</p>
+            </div>
+
+            {lowStockProducts.length === 0 ? (
+              <div className="no-alerts">
+                <div className="no-alerts-icon">✅</div>
+                <h3>All Stock Levels Good</h3>
+                <p>No products are currently low on stock</p>
+              </div>
+            ) : (
+              <div className="stock-alerts">
+                {lowStockProducts.map(product => (
+                  <div key={product.id} className="stock-alert-card">
+                    <div className="alert-severity">
+                      {product.stock === 0 ? (
+                        <span className="out-of-stock">OUT OF STOCK</span>
+                      ) : (
+                        <span className="low-stock">LOW STOCK</span>
+                      )}
+                    </div>
+                    <div className="product-info">
+                      <h4>{product.name}</h4>
+                      <p>{product.description}</p>
+                    </div>
+                    <div className="stock-info">
+                      <div className="current-stock">
+                        <strong>{product.stock}</strong> <span>units left</span>
+                      </div>
+                      <div className="product-price">${product.price}</div>
+                    </div>
+                    <div className="alert-actions">
+                      <button 
+                        onClick={() => navigate('/admin/inventory')}
+                        className="restock-btn"
+                      >
+                        Restock
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
 
         {activeTab === 'users' && (
           <div className="users-tab">
-            <div className="tab-header">
-              <h2>👥 User Management</h2>
-              <p>Manage user accounts and permissions</p>
+            <div className="users-header">
+              <h2>User Management</h2>
+              <p>Manage customer and admin accounts</p>
             </div>
-            
-            <div className="users-table-container">
-              <table className="modern-table">
-                <thead>
-                  <tr>
-                    <th>User ID</th>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Role</th>
-                    <th>Joined</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {users.map(user => (
-                    <tr key={user.id}>
-                      <td>#{user.id.toString().padStart(4, '0')}</td>
-                      <td>{user.name}</td>
-                      <td>{user.email}</td>
-                      <td>
-                        <span className={`role-badge ${user.role}`}>
-                          {user.role}
-                        </span>
-                      </td>
-                      <td>{formatDate(user.createdAt)}</td>
-                      <td>
-                        <div className="action-buttons">
-                          <button 
-                            className="action-btn edit"
-                            onClick={() => navigate(`/admin/user/${user.id}`)}
-                            title="Edit User"
-                          >
-                            ✏️
-                          </button>
-                          <button 
-                            className="action-btn delete"
-                            onClick={() => deleteUser(user.id)}
-                            title="Delete User"
-                          >
-                            🗑️
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+
+            <div className="users-stats">
+              <div className="user-stat">
+                <h4>{users.filter(u => u.role === 'customer').length}</h4>
+                <p>Customers</p>
+              </div>
+              <div className="user-stat">
+                <h4>{users.filter(u => u.role === 'admin').length}</h4>
+                <p>Admins</p>
+              </div>
+              <div className="user-stat">
+                <h4>{users.length}</h4>
+                <p>Total Users</p>
+              </div>
+            </div>
+
+            <div className="users-table">
+              <div className="table-header">
+                <div>Name</div>
+                <div>Email</div>
+                <div>Role</div>
+                <div>Joined</div>
+                <div>Actions</div>
+              </div>
+              
+              {users.map(user => (
+                <div key={user.id} className="table-row">
+                  <div className="user-name">{user.name}</div>
+                  <div className="user-email">{user.email}</div>
+                  <div className="user-role">
+                    <span className={`role-badge ${user.role}`}>
+                      {user.role}
+                    </span>
+                  </div>
+                  <div className="user-date">{formatDate(user.createdAt)}</div>
+                  <div className="user-actions">
+                    <button 
+                      onClick={() => deleteUser(user.id)}
+                      className="delete-btn"
+                      disabled={user.role === 'admin'}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         )}

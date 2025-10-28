@@ -1,4 +1,5 @@
 import express from "express";
+import jwt from "jsonwebtoken";
 import Order from "../models/Order.js";
 import OrderItem from "../models/OrderItem.js";
 import Product from "../models/Product.js";
@@ -7,11 +8,11 @@ import { authenticate, isCustomer } from "../middleware/auth.js";
 
 const router = express.Router();
 
-// Create new order (with bill generation)
-router.post("/", authenticate, isCustomer, async (req, res) => {
+// Create new order (with bill generation) - Guest checkout allowed
+router.post("/", async (req, res) => {
   try {
-    const { items } = req.body; // items: [{productId, quantity}]
-    const userId = req.user.id;
+    const { items, customerName = 'Guest User', customerEmail = 'guest@inventorypro.com' } = req.body; // items: [{productId, quantity}]
+    const userId = req.user?.id || null; // null for guest users
 
     let totalAmount = 0;
     const orderItems = [];
@@ -33,12 +34,12 @@ router.post("/", authenticate, isCustomer, async (req, res) => {
           availableStock: product.stock
         });
 
-        // Create missing product report
+        // Create missing product report for tracking purposes
         await MissingProductReport.create({
           productName: product.name,
           requestedQuantity: item.quantity - product.stock,
           customerId: userId,
-          customerName: req.user.email
+          customerName: customerName
         });
 
         continue;
@@ -67,8 +68,8 @@ router.post("/", authenticate, isCustomer, async (req, res) => {
     const order = await Order.create({
       userId,
       totalAmount,
-      customerName: req.user.email,
-      customerEmail: req.user.email,
+      customerName,
+      customerEmail,
       status: "completed"
     });
 
@@ -112,27 +113,21 @@ router.get("/my-orders", authenticate, isCustomer, async (req, res) => {
   try {
     const orders = await Order.findAll({ 
       where: { userId: req.user.id },
+      include: [{
+        model: OrderItem,
+        include: [Product]
+      }],
       order: [['createdAt', 'DESC']]
     });
 
-    const ordersWithItems = await Promise.all(
-      orders.map(async (order) => {
-        const items = await OrderItem.findAll({ where: { orderId: order.id } });
-        return {
-          ...order.toJSON(),
-          items
-        };
-      })
-    );
-
-    res.json(ordersWithItems);
+    res.json(orders);
   } catch (error) {
     res.status(500).json({ message: "Error fetching orders", error: error.message });
   }
 });
 
-// Get specific order/bill
-router.get("/:id", authenticate, async (req, res) => {
+// Get specific order/bill - Allow guest access
+router.get("/:id", async (req, res) => {
   try {
     const order = await Order.findByPk(req.params.id);
     
@@ -140,8 +135,24 @@ router.get("/:id", authenticate, async (req, res) => {
       return res.status(404).json({ message: "Order not found" });
     }
 
-    // Check if user owns this order or is admin
-    if (order.userId !== req.user.id && req.user.role !== "admin") {
+    // For authenticated users, check ownership or admin role
+    if (req.headers.authorization) {
+      try {
+        const token = req.headers.authorization.split(" ")[1];
+        const decoded = jwt.verify(token, process.env.JWT_SECRET || "supersecretkey");
+        
+        // Check if user owns this order or is admin
+        if (order.userId !== decoded.id && decoded.role !== "admin") {
+          return res.status(403).json({ message: "Access denied" });
+        }
+      } catch (authError) {
+        // Invalid token, but still allow if it's a guest order (userId is null)
+        if (order.userId !== null) {
+          return res.status(403).json({ message: "Access denied" });
+        }
+      }
+    } else if (order.userId !== null) {
+      // No token provided, only allow access to guest orders
       return res.status(403).json({ message: "Access denied" });
     }
 
@@ -160,6 +171,45 @@ router.get("/:id", authenticate, async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({ message: "Error fetching order", error: error.message });
+  }
+});
+
+// Generate Invoice PDF (placeholder - would need PDF generation library)
+router.get("/invoice/:id", async (req, res) => {
+  try {
+    const order = await Order.findByPk(req.params.id, {
+      include: [{
+        model: OrderItem,
+        include: [Product]
+      }]
+    });
+    
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    // For now, return JSON invoice data
+    // In production, you would generate a PDF using libraries like jsPDF or PDFKit
+    const invoiceData = {
+      invoiceNumber: `INV-${order.id.toString().padStart(6, '0')}`,
+      orderDate: order.createdAt,
+      customerName: order.customerName,
+      customerEmail: order.customerEmail,
+      items: order.OrderItems.map(item => ({
+        name: item.Product.name,
+        quantity: item.quantity,
+        price: item.price,
+        total: item.quantity * item.price
+      })),
+      subtotal: order.totalAmount,
+      tax: 0, // Can be calculated if needed
+      total: order.totalAmount,
+      status: order.status
+    };
+
+    res.json(invoiceData);
+  } catch (error) {
+    res.status(500).json({ message: "Error generating invoice", error: error.message });
   }
 });
 

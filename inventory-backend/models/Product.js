@@ -8,7 +8,7 @@ const Product = sequelize.define("Product", {
   price: { type: DataTypes.FLOAT, allowNull: false },
   stock: { type: DataTypes.INTEGER, defaultValue: 0 },
   lowStockThreshold: { type: DataTypes.INTEGER, defaultValue: 10 },
-  imageUrl: { type: DataTypes.STRING, allowNull: true }
+  imageUrl: { type: DataTypes.STRING(500), allowNull: true }
 });
 
 export default Product;

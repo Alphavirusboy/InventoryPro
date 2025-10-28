@@ -4,34 +4,61 @@ import { useAuth } from '../context/AuthContext';
 import '../styles/Auth.css';
 
 function Signup() {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [role, setRole] = useState('customer');
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
-  const { signup } = useAuth();
   const navigate = useNavigate();
+  const { signup } = useAuth();
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+    role: 'customer'
+  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
     setLoading(true);
+    setError('');
 
-    const result = await signup(name, email, password, role);
-    
-    if (result.success) {
-      // Redirect based on role
-      if (result.user.role === 'admin') {
-        navigate('/admin/dashboard');
-      } else {
-        navigate('/shop');
-      }
-    } else {
-      setError(result.message);
+    // Validation
+    if (formData.password !== formData.confirmPassword) {
+      setError('Passwords do not match');
+      setLoading(false);
+      return;
     }
-    
-    setLoading(false);
+
+    if (formData.password.length < 6) {
+      setError('Password must be at least 6 characters');
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const result = await signup(formData.name, formData.email, formData.password, formData.role);
+      
+      if (result.success) {
+        // Redirect based on user role
+        if (result.user.role === 'admin') {
+          navigate('/admin/dashboard');
+        } else {
+          navigate('/shop');
+        }
+      } else {
+        setError(result.message);
+      }
+    } catch (error) {
+      setError('Signup failed. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
   };
 
   return (
@@ -39,61 +66,95 @@ function Signup() {
       <div className="auth-card">
         <div className="auth-header">
           <h1>Create Account</h1>
-          <p>Join our inventory system</p>
+          <p>Join InventoryPro today</p>
         </div>
-        
+
+        {error && <div className="error-message">{error}</div>}
+
         <form onSubmit={handleSubmit} className="auth-form">
-          {error && <div className="error-message">{error}</div>}
-          
           <div className="form-group">
-            <label>Full Name</label>
+            <label htmlFor="name">Full Name</label>
             <input
               type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Enter your name"
+              id="name"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
               required
+              placeholder="Enter your full name"
             />
           </div>
 
           <div className="form-group">
-            <label>Email</label>
+            <label htmlFor="email">Email Address</label>
             <input
               type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter your email"
+              id="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
               required
+              placeholder="Enter your email"
             />
           </div>
 
           <div className="form-group">
-            <label>Password</label>
+            <label htmlFor="password">Password</label>
             <input
               type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Create a password"
+              id="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
               required
-              minLength={6}
+              placeholder="Choose a password (min 6 characters)"
             />
           </div>
 
           <div className="form-group">
-            <label>Account Type</label>
-            <select value={role} onChange={(e) => setRole(e.target.value)}>
+            <label htmlFor="confirmPassword">Confirm Password</label>
+            <input
+              type="password"
+              id="confirmPassword"
+              name="confirmPassword"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              required
+              placeholder="Confirm your password"
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="role">Account Type</label>
+            <select
+              id="role"
+              name="role"
+              value={formData.role}
+              onChange={handleChange}
+              required
+            >
               <option value="customer">Customer</option>
               <option value="admin">Admin</option>
             </select>
           </div>
 
-          <button type="submit" className="btn-primary" disabled={loading}>
-            {loading ? 'Creating Account...' : 'Sign Up'}
+          <button 
+            type="submit" 
+            className="btn-primary btn-full"
+            disabled={loading}
+          >
+            {loading ? 'Creating Account...' : 'Create Account'}
           </button>
         </form>
 
         <div className="auth-footer">
-          <p>Already have an account? <Link to="/login">Sign in</Link></p>
+          <p>
+            Already have an account? 
+            <Link to="/login" className="auth-link"> Sign in here</Link>
+          </p>
+          <p>
+            Continue as <Link to="/shop" className="auth-link">Guest</Link>
+          </p>
         </div>
       </div>
     </div>

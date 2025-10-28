@@ -2,23 +2,16 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useCart } from '../context/CartContext';
-import { useAuth } from '../context/AuthContext';
 import '../styles/Cart.css';
 
 function Cart() {
   const { cart, updateQuantity, removeFromCart, getTotal, clearCart } = useCart();
-  const { token, user } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
 
   const handleCheckout = async () => {
-    if (!token) {
-      navigate('/login');
-      return;
-    }
-
     setLoading(true);
     setError('');
 
@@ -28,13 +21,13 @@ function Cart() {
         quantity: item.quantity
       }));
 
-      const response = await axios.post(
-        'http://localhost:5000/api/orders',
-        { items },
-        {
-          headers: { Authorization: `Bearer ${token}` }
-        }
-      );
+      const orderData = {
+        items,
+        customerName: 'Guest User',
+        customerEmail: 'guest@inventorypro.com'
+      };
+
+      const response = await axios.post('http://localhost:3001/api/orders', orderData);
 
       setSuccess(true);
       clearCart();

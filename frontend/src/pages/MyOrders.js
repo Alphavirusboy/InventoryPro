@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { useAuth } from '../context/AuthContext';
 import '../styles/Orders.css';
 
 function MyOrders() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { token } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -17,8 +15,7 @@ function MyOrders() {
   const fetchOrders = async () => {
     try {
       const response = await axios.get(
-        'http://localhost:5000/api/orders/my-orders',
-        { headers: { Authorization: `Bearer ${token}` } }
+        'http://localhost:3001/api/orders/my-orders'
       );
       setOrders(response.data);
       setLoading(false);
