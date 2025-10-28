@@ -64,91 +64,163 @@ function Login() {
   };
 
   return (
-    <div className="auth-container">
-      <div className="auth-card">
-        <div className="auth-header">
-          <h1>Welcome Back</h1>
-          <p>Sign in to your InventoryPro account</p>
+    <div className="modern-auth-container">
+      {/* Left Side - Branding */}
+      <div className="auth-branding">
+        <div className="branding-content">
+          <div className="logo-section">
+            <div className="logo-icon">📦</div>
+            <h1 className="brand-name">InventoryPro</h1>
+          </div>
+          <h2 className="brand-tagline">Professional Inventory Management</h2>
+          <p className="brand-description">
+            Streamline your business operations with our comprehensive inventory management system. 
+            Track stock, manage orders, and analyze your business performance all in one place.
+          </p>
+          <div className="feature-highlights">
+            <div className="feature-item">
+              <span className="feature-icon">📊</span>
+              <span>Real-time Analytics</span>
+            </div>
+            <div className="feature-item">
+              <span className="feature-icon">🔒</span>
+              <span>Secure & Reliable</span>
+            </div>
+            <div className="feature-item">
+              <span className="feature-icon">⚡</span>
+              <span>Lightning Fast</span>
+            </div>
+          </div>
         </div>
+      </div>
 
-        {error && <div className="error-message">{error}</div>}
-
-        <form onSubmit={handleSubmit} className="auth-form">
-          <div className="form-group">
-            <label htmlFor="email">Email Address</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              placeholder="Enter your email"
-            />
+      {/* Right Side - Login Form */}
+      <div className="auth-form-section">
+        <div className="auth-form-container">
+          <div className="form-header">
+            <h2>Welcome Back!</h2>
+            <p>Please sign in to your account</p>
           </div>
 
-          <div className="form-group">
-            <label htmlFor="password">Password</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-              placeholder="Enter your password"
-            />
-          </div>
+          {error && (
+            <div className="error-alert">
+              <span className="error-icon">⚠️</span>
+              {error}
+            </div>
+          )}
 
-          <div className="form-group">
-            <label htmlFor="role">Login as</label>
-            <select
-              id="role"
-              name="role"
-              value={formData.role}
-              onChange={handleChange}
-              required
+          <form onSubmit={handleSubmit} className="modern-form">
+            <div className="input-group">
+              <label htmlFor="email">Email Address</label>
+              <div className="input-wrapper">
+                <span className="input-icon">📧</span>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                  placeholder="Enter your email address"
+                  className="modern-input"
+                />
+              </div>
+            </div>
+
+            <div className="input-group">
+              <label htmlFor="password">Password</label>
+              <div className="input-wrapper">
+                <span className="input-icon">🔒</span>
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
+                  placeholder="Enter your password"
+                  className="modern-input"
+                />
+              </div>
+            </div>
+
+            <div className="input-group">
+              <label htmlFor="role">Account Type</label>
+              <div className="input-wrapper">
+                <span className="input-icon">👤</span>
+                <select
+                  id="role"
+                  name="role"
+                  value={formData.role}
+                  onChange={handleChange}
+                  required
+                  className="modern-select"
+                >
+                  <option value="customer">Customer Account</option>
+                  <option value="admin">Administrator</option>
+                </select>
+              </div>
+            </div>
+
+            <button 
+              type="submit" 
+              className="modern-btn-primary"
+              disabled={loading}
             >
-              <option value="customer">Customer</option>
-              <option value="admin">Admin</option>
-            </select>
+              {loading ? (
+                <>
+                  <span className="loading-spinner"></span>
+                  Signing in...
+                </>
+              ) : (
+                <>
+                  <span>Sign In</span>
+                  <span className="btn-arrow">→</span>
+                </>
+              )}
+            </button>
+          </form>
+
+          <div className="divider">
+            <span>or try demo accounts</span>
           </div>
 
-          <button 
-            type="submit" 
-            className="btn-primary btn-full"
-            disabled={loading}
-          >
-            {loading ? 'Signing in...' : 'Sign In'}
-          </button>
-        </form>
-
-        <div className="demo-section">
-          <p>Demo Accounts:</p>
-          <div className="demo-buttons">
+          <div className="demo-accounts">
             <button 
               onClick={() => quickLogin('admin')} 
-              className="btn-demo btn-admin"
+              className="demo-btn admin-demo"
             >
-              Admin Demo
+              <div className="demo-btn-content">
+                <span className="demo-icon">👨‍💼</span>
+                <div>
+                  <div className="demo-title">Admin Demo</div>
+                  <div className="demo-subtitle">Full access dashboard</div>
+                </div>
+              </div>
             </button>
             <button 
               onClick={() => quickLogin('customer')} 
-              className="btn-demo btn-customer"
+              className="demo-btn customer-demo"
             >
-              Customer Demo
+              <div className="demo-btn-content">
+                <span className="demo-icon">🛍️</span>
+                <div>
+                  <div className="demo-title">Customer Demo</div>
+                  <div className="demo-subtitle">Shopping experience</div>
+                </div>
+              </div>
             </button>
           </div>
-        </div>
 
-        <div className="auth-footer">
-          <p>
-            Don't have an account? 
-            <Link to="/signup" className="auth-link"> Sign up here</Link>
-          </p>
-          <p>
-            Continue as <Link to="/shop" className="auth-link">Guest</Link>
-          </p>
+          <div className="form-footer">
+            <p>
+              Don't have an account? 
+              <Link to="/signup" className="footer-link"> Create one here</Link>
+            </p>
+            <p>
+              <Link to="/shop" className="footer-link">Continue as Guest</Link>
+            </p>
+          </div>
         </div>
       </div>
     </div>

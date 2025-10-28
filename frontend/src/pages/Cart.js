@@ -27,17 +27,25 @@ function Cart() {
         customerEmail: 'guest@inventorypro.com'
       };
 
+      console.log('Creating order with data:', orderData);
       const response = await axios.post('http://localhost:3001/api/orders', orderData);
+      console.log('Order creation response:', response.data);
 
-      setSuccess(true);
-      clearCart();
-      
-      // Redirect to bill page after 2 seconds
-      setTimeout(() => {
-        navigate(`/orders/${response.data.order.id}`);
-      }, 2000);
+      if (response.data && response.data.order && response.data.order.id) {
+        setSuccess(true);
+        clearCart();
+        
+        // Redirect to bill page after 2 seconds
+        setTimeout(() => {
+          console.log('Redirecting to order:', response.data.order.id);
+          navigate(`/orders/${response.data.order.id}`);
+        }, 2000);
+      } else {
+        throw new Error('Invalid response: No order ID received');
+      }
     } catch (error) {
-      setError(error.response?.data?.message || 'Checkout failed');
+      console.error('Checkout error:', error);
+      setError(error.response?.data?.message || error.message || 'Checkout failed');
       setLoading(false);
     }
   };

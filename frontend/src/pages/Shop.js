@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import '../styles/Shop.css';
@@ -126,6 +126,12 @@ function Shop() {
         <div className="header-content">
           <h1>🛒 Shop Products</h1>
           <p>Discover amazing products at great prices</p>
+          {!user && (
+            <div className="guest-notice">
+              <span className="guest-icon">👋</span>
+              <span>Shopping as guest • <Link to="/login" className="login-prompt">Sign in</Link> for order tracking</span>
+            </div>
+          )}
         </div>
         
         <div className="header-actions">

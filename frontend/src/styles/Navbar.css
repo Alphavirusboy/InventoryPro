@@ -4,14 +4,15 @@
   left: 0;
   right: 0;
   height: 80px;
-  background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  background: linear-gradient(135deg, #64748b 0%, #475569 100%);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 8px 32px rgba(100, 116, 139, 0.1);
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 2rem;
   z-index: 1000;
-  border-bottom: 3px solid #e67e22;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .navbar-brand a {
@@ -24,11 +25,13 @@
   gap: 0.5rem;
   letter-spacing: -1px;
   transition: all 0.3s;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .navbar-brand a:hover {
   transform: scale(1.05);
-  color: #e67e22;
+  color: #fbbf24;
+  text-shadow: 0 0 20px rgba(251, 191, 36, 0.5);
 }
 
 .navbar-menu {
@@ -40,48 +43,60 @@
 
 .nav-link {
   text-decoration: none;
-  color: #ecf0f1;
+  color: rgba(255, 255, 255, 0.9);
   font-weight: 600;
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
-  transition: all 0.3s;
+  padding: 0.8rem 1.2rem;
+  border-radius: 12px;
+  transition: all 0.3s ease;
   font-size: 0.9rem;
   letter-spacing: 0.5px;
+  position: relative;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
 }
 
 .nav-link:hover {
-  color: #e67e22;
-  background: rgba(236, 240, 241, 0.1);
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
   transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
 }
 
 .admin-link {
-  border: 1px solid rgba(231, 76, 60, 0.5);
-  background: rgba(231, 76, 60, 0.1);
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: white;
+  font-weight: 700;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(245, 158, 11, 0.3);
 }
 
 .admin-link:hover {
-  background: rgba(231, 76, 60, 0.2);
-  border-color: #e74c3c;
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(245, 158, 11, 0.4);
 }
 
 .cart-link {
   position: relative;
-  background: rgba(230, 126, 34, 0.2);
-  border: 1px solid rgba(230, 126, 34, 0.5);
-  padding: 0.6rem 1.2rem;
-  border-radius: 25px;
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  padding: 0.8rem 1.2rem;
+  border-radius: 12px;
+  border: 1px solid rgba(16, 185, 129, 0.3);
 }
 
 .cart-link:hover {
-  background: rgba(230, 126, 34, 0.3);
+  background: linear-gradient(135deg, #34d399, #10b981);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4);
 }
 
 .cart-badge {
   position: absolute;
   top: -8px;
   right: -8px;
-  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  background: linear-gradient(135deg, #ef4444, #dc2626);
   color: white;
   border-radius: 50%;
   width: 24px;
@@ -91,7 +106,14 @@
   justify-content: center;
   font-size: 0.8rem;
   font-weight: 700;
-  box-shadow: 0 2px 8px rgba(231, 76, 60, 0.4);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
 }
 
 .auth-section {
@@ -113,7 +135,7 @@
 }
 
 .admin-badge {
-  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  background: linear-gradient(135deg, #f59e0b, #d97706);
   color: white;
   padding: 0.2rem 0.5rem;
   border-radius: 12px;
@@ -121,25 +143,27 @@
   font-weight: 700;
   text-transform: uppercase;
   margin-left: 0.5rem;
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
 }
 
 .logout-btn {
-  padding: 0.5rem 1rem;
-  background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+  padding: 0.8rem 1.2rem;
+  background: linear-gradient(135deg, #ef4444, #dc2626);
   color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: 12px;
   cursor: pointer;
   font-weight: 600;
   font-size: 0.9rem;
-  transition: all 0.3s;
+  transition: all 0.3s ease;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
 .logout-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(231, 76, 60, 0.4);
+  background: linear-gradient(135deg, #f87171, #ef4444);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(239, 68, 68, 0.4);
 }
 
 .auth-links {
@@ -148,27 +172,31 @@
 }
 
 .login-link {
-  color: #3498db !important;
-  border: 1px solid rgba(52, 152, 219, 0.5);
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  color: white !important;
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  font-weight: 600;
 }
 
 .login-link:hover {
-  background: rgba(52, 152, 219, 0.1);
-  border-color: #3498db;
+  background: linear-gradient(135deg, #818cf8, #6366f1);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
 }
 
 .signup-link {
-  background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
+  background: linear-gradient(135deg, #ec4899, #db2777);
   color: white !important;
-  border: 1px solid #e67e22;
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
-  font-weight: 700;
+  border: 1px solid rgba(236, 72, 153, 0.3);
+  padding: 0.8rem 1.2rem;
+  border-radius: 12px;
+  font-weight: 600;
 }
 
 .signup-link:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(230, 126, 34, 0.4);
+  background: linear-gradient(135deg, #f472b6, #ec4899);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(236, 72, 153, 0.4);
 }
 
 /* Responsive design */

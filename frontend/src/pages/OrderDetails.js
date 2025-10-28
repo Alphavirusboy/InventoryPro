@@ -12,26 +12,38 @@ function OrderDetails() {
 
   useEffect(() => {
     fetchOrder();
-  }, [id]);
+  }, [id, token]); // Added token as dependency
 
   const fetchOrder = async () => {
     try {
-      // Try to fetch order with authentication first (for logged-in users)
-      let response;
-      const headers = {};
+      setLoading(true);
+      console.log('Fetching order ID:', id);
       
+      // Always try to fetch the order, with token if available
+      const headers = {};
       if (token) {
         headers.Authorization = `Bearer ${token}`;
       }
       
-      response = await axios.get(
+      const response = await axios.get(
         `http://localhost:3001/api/orders/${id}`,
         { headers }
       );
+      
+      console.log('Order fetched successfully:', response.data);
       setOrder(response.data);
-      setLoading(false);
     } catch (error) {
       console.error('Error fetching order:', error);
+      console.error('Error response:', error.response?.data);
+      
+      // If it's a 404, show order not found
+      if (error.response?.status === 404) {
+        setOrder(null);
+      } else {
+        // For other errors, still try to show what we can
+        setOrder(null);
+      }
+    } finally {
       setLoading(false);
     }
   };
